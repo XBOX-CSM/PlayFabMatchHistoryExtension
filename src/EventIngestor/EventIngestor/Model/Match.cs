@@ -7,7 +7,7 @@ namespace EventIngestor.Model
         [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        public string PlayerEntityId { get; set; }
+        public string MasterPlayerEntityId { get; set; }
 
         public bool IsMatchWon { get; set; }
     }

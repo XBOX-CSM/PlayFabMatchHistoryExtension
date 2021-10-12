@@ -36,3 +36,6 @@ terraform.rc
 
 # Local Backend config file
 backend.local.config.tf
+
+# Plan files
+*.plan

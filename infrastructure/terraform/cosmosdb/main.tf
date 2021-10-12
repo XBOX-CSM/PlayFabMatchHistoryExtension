@@ -32,12 +32,12 @@ resource "azurerm_cosmosdb_sql_database" "db" {
 }
 
 resource "azurerm_cosmosdb_sql_container" "match_container" {
-  name                = "match"
+  name                = var.container_name
   resource_group_name = azurerm_cosmosdb_account.cosmosdb_account.resource_group_name
   account_name        = azurerm_cosmosdb_account.cosmosdb_account.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
 
-  partition_key_path    = "/id"
+  partition_key_path    = var.partition_key
   partition_key_version = 1
   # Must not set "throughput" for serverless
 

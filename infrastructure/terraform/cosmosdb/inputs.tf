@@ -8,6 +8,17 @@ variable "prefix" {
 }
 
 variable "tags" {
-  type    = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
+  description = "Tags to be added to the resource"
+}
+
+variable "container_name" {
+  type        = string
+  description = "Name of the database container"
+}
+
+variable "partition_key" {
+  type        = string
+  description = "Path of the Partition Key"
 }

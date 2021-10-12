@@ -43,6 +43,8 @@ module "cosmosdb" {
   resource_group = azurerm_resource_group.rg
   tags           = var.tags
   prefix         = var.prefix
+  container_name = "match"
+  partition_key = "/playerEntityId"
 }
 
 

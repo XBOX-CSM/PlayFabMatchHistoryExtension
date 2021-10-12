@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="33.1.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="PlayFabAllSDK" Version="1.102.210927" />
   </ItemGroup>
 

@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using Newtonsoft.Json;
 using PlayFab;
 using PlayFab.AuthenticationModels;
 
@@ -9,15 +8,10 @@ namespace GameServerMock
     {
         public static async Task Main(string[] args)
         {
-            var playerIdList = new[] { "663E07204C3DB17C" };
-            var matchIdList = new[] { "0000" };
+            var playerIdList = new[] { "663E07204C3DB17C", "91F18604695EEE58", "8982965E4E8581AC", "89F845F1589FCC45", "89F845F1589FCC45", "69D7719CC4C64C38" };
+            var matchIdList = new[] { "7b92c513-3659-4f46-be63-f2d823c19db7", "c713d080-ac7c-46c5-a119-f6004b9b72e3", "0c24427f-2ebf-44a6-8f12-37259924c7e2" };
 
-            var testGameServerEvent = new Faker<StatusUpdateEntity>().StrictMode(true)
-                .RuleFor(s => s.MatchId, f => f.PickRandom(matchIdList))
-                .RuleFor(s => s.IsMatchWon, f => f.Random.Bool());
 
-            var testEvent = testGameServerEvent.Generate();
-            var eventAsJson = JsonConvert.SerializeObject(testEvent);
 
             PlayFab.PlayFabSettings.staticSettings.TitleId = PlayFabSettings.TitleId;
             PlayFab.PlayFabSettings.staticSettings.DeveloperSecretKey = PlayFabSettings.Secret;
@@ -28,17 +22,31 @@ namespace GameServerMock
             var titleEntityResponse = await PlayFabAuthenticationAPI.GetEntityTokenAsync(getTitleEntityTokenRequest);
             if (titleEntityResponse.Result != null)
             {
-                var writeEventRequest = new PlayFab.ServerModels.WriteServerPlayerEventRequest
+                while (true)
                 {
-                    EventName = "player_finished_match",
-                    PlayFabId = playerIdList[random.Next(0, playerIdList.Length)],
-                    Timestamp = DateTime.Now,
-                    Body = new Dictionary<string, object>() { { "test", testEvent } },
-                };
+                    var testGameServerEvent = new Faker<StatusUpdateEntity>().StrictMode(true)
+                        .RuleFor(s => s.MatchId, f => f.Random.Replace("********-****-****-****-************"))
+                        .RuleFor(s => s.IsMatchWon, f => f.Random.Bool());
 
-                var test = await PlayFabServerAPI.WritePlayerEventAsync(writeEventRequest);
+                    var testEvent = testGameServerEvent.Generate();
 
-                Console.WriteLine("Succes!!");
+                    var writeEventRequest = new PlayFab.ServerModels.WriteServerPlayerEventRequest
+                    {
+                        EventName = "player_finished_match",
+                        PlayFabId = playerIdList[random.Next(0, playerIdList.Length)],
+                        Timestamp = DateTime.Now,
+                        Body = new Dictionary<string, object>() { { "MatchData", testEvent } },
+                    };
+
+                    await PlayFabServerAPI.WritePlayerEventAsync(writeEventRequest);
+
+                    Console.WriteLine("Event Send for Player " + writeEventRequest.PlayFabId + " and Match " + testEvent.MatchId);
+
+
+                    Thread.Sleep(1000);
+                }
+
+
             }
             else
             {

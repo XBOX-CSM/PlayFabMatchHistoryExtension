@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System;
+using EventIngestor.Model;
 using EventIngestor.Repository;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
@@ -8,22 +9,27 @@ using Newtonsoft.Json;
 
 namespace EventIngestor
 {
-    public class PlayerFinishedMatchEvent
+    public class PlayerFinishedMatchEventHandler
     {
         private readonly MatchRepository matchRepository;
 
-        public PlayerFinishedMatchEvent(MatchRepository matchRepository)
+        public PlayerFinishedMatchEventHandler(MatchRepository matchRepository)
         {
             this.matchRepository = matchRepository;
         }
         
-        [FunctionName("PlayerFinishedMatchEvent")]
+        [FunctionName("PlayerFinishedMatchEventHandler")]
         public async Task RunAsync([QueueTrigger("player-finished-match-queue", Connection = "EventQueueStorage")] string myQueueItem, ILogger log)
         {
-            log.LogInformation($"C# Queue trigger function processed: {myQueueItem}");
-            
             var context = JsonConvert.DeserializeObject<PlayerPlayStreamFunctionExecutionContext<dynamic>>(myQueueItem);
-            // context.PlayStreamEventEnvelope.EventData
+            var eventData = JsonConvert.DeserializeObject<PlayerFinishedMatchEvent>(context.PlayStreamEventEnvelope.EventData);
+            var match = new Match
+            {
+                Id = eventData.MatchData.MatchId,
+                IsMatchWon = eventData.MatchData.IsMatchWon,
+                MasterPlayerEntityId = eventData.EntityId
+            };
+            await this.matchRepository.Save(match);
         }
     }
 }

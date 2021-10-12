@@ -33,6 +33,11 @@ resource "azurerm_storage_account" "storage" {
   access_tier              = "Hot"
 }
 
+resource "azurerm_storage_queue" "queue" {
+  name                 = "player-finished-match-queue"
+  storage_account_name = azurerm_storage_account.storage.name
+}
+
 module "cosmosdb" {
   source         = "./cosmosdb"
   resource_group = azurerm_resource_group.rg

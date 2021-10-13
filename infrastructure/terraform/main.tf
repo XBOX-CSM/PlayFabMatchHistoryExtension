@@ -60,8 +60,20 @@ resource "azurerm_app_service_plan" "app_service_plan" {
   }
 }
 
+locals {
+  eventingestor_function_name = "${var.prefix}-eventingestor-function"
+  publicapi_function_name = "${var.prefix}-publicapi-function"
+}
+
+resource "azurerm_application_insights" "apinsights_eventingestor" {
+  name                = "${local.eventingestor_function_name}-appinsights"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = "web"
+}
+
 resource "azurerm_function_app" "function_eventingestor" {
-  name                       = "${var.prefix}-eventingestor-function"
+  name                       = local.eventingestor_function_name
   location                   = azurerm_resource_group.rg.location
   resource_group_name        = azurerm_resource_group.rg.name
   app_service_plan_id        = azurerm_app_service_plan.app_service_plan.id
@@ -84,6 +96,10 @@ resource "azurerm_function_app" "function_eventingestor" {
     type  = "Custom"
     value = azurerm_storage_account.storage.primary_connection_string
   }
+  
+  app_settings = {
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.apinsights_eventingestor.instrumentation_key}"
+  }
 
   site_config {
     ftps_state = "Disabled"
@@ -92,8 +108,15 @@ resource "azurerm_function_app" "function_eventingestor" {
   }
 }
 
+resource "azurerm_application_insights" "apinsights_publicapi" {
+  name                = "${local.publicapi_function_name}-appinsights"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = "web"
+}
+
 resource "azurerm_function_app" "function_publicapi" {
-  name                       = "${var.prefix}-publicapi-function"
+  name                       = local.publicapi_function_name
   location                   = azurerm_resource_group.rg.location
   resource_group_name        = azurerm_resource_group.rg.name
   app_service_plan_id        = azurerm_app_service_plan.app_service_plan.id
@@ -111,6 +134,10 @@ resource "azurerm_function_app" "function_publicapi" {
     value = module.cosmosdb.connection_strings[0]
   }
 
+  app_settings = {
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.apinsights_publicapi.instrumentation_key}"
+  }
+  
   site_config {
     ftps_state = "Disabled"
     //    ip_restriction = []

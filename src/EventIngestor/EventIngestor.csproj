@@ -12,9 +12,6 @@
         <PackageReference Include="PlayFabAllSDK" Version="1.103.211012" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\Util\Util.csproj" />
-    </ItemGroup>
-    <ItemGroup>
         <None Update="host.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
@@ -22,5 +19,8 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </None>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Util\Util.csproj" />
     </ItemGroup>
 </Project>

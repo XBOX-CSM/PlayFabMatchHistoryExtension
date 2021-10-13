@@ -37,6 +37,8 @@ namespace PublicApi
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
+            await AuthenticatePlayFabSessionTicketAsync("663E07204C3DB17C--D48E192EFA5113F5-2826D-8D98E552B1038D7-g9KzH8MAyXvUmXrk88EaMgjqXYKzKTgRC22zDJAO5wk=", log);
+
             string name = req.Query["name"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -50,7 +52,7 @@ namespace PublicApi
             return new OkObjectResult(responseMessage);
         }
 
-        private async Task AuthenticatePlayFabSessionTicketAsync(string sessionTicket, ILogger log)
+        public static async Task AuthenticatePlayFabSessionTicketAsync(string sessionTicket, ILogger log)
         {
             PlayFab.PlayFabSettings.staticSettings.TitleId = Environment.GetEnvironmentVariable("PlayFabTitleId");
             PlayFab.PlayFabSettings.staticSettings.DeveloperSecretKey = Environment.GetEnvironmentVariable("PlayFabSecret");
@@ -65,7 +67,7 @@ namespace PublicApi
                     SessionTicket = sessionTicket
                 };
 
-                await PlayFabServerAPI.AuthenticateSessionTicketAsync(request);
+                var nase = await PlayFabServerAPI.AuthenticateSessionTicketAsync(request);
 
                 log.LogInformation("Successfully validate authentication Ticket");
             }

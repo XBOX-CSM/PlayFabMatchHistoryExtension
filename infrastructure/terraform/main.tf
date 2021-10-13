@@ -60,8 +60,8 @@ resource "azurerm_app_service_plan" "app_service_plan" {
   }
 }
 
-resource "azurerm_function_app" "function" {
-  name                       = "${var.prefix}-function"
+resource "azurerm_function_app" "function_eventingestor" {
+  name                       = "${var.prefix}-eventingestor-function"
   location                   = azurerm_resource_group.rg.location
   resource_group_name        = azurerm_resource_group.rg.name
   app_service_plan_id        = azurerm_app_service_plan.app_service_plan.id
@@ -72,9 +72,32 @@ resource "azurerm_function_app" "function" {
   enable_builtin_logging = true
   https_only             = true
   version                 = "~3"
-  //  identity {
-  //    type = ""
-  //  }
+
+  connection_string {
+    name  = "CosmosDb"
+    type  = "Custom"
+    value = module.cosmosdb.connection_strings[0]
+  }
+
+  site_config {
+    ftps_state = "Disabled"
+    //    ip_restriction = []
+    min_tls_version = "1.2"
+  }
+}
+
+resource "azurerm_function_app" "function_publicapi" {
+  name                       = "${var.prefix}-publicapi-function"
+  location                   = azurerm_resource_group.rg.location
+  resource_group_name        = azurerm_resource_group.rg.name
+  app_service_plan_id        = azurerm_app_service_plan.app_service_plan.id
+  storage_account_name       = azurerm_storage_account.storage.name
+  storage_account_access_key = azurerm_storage_account.storage.primary_access_key
+
+  enabled                = true
+  enable_builtin_logging = true
+  https_only             = true
+  version                 = "~3"
 
   connection_string {
     name  = "CosmosDb"

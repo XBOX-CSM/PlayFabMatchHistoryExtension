@@ -130,6 +130,8 @@ resource "azurerm_function_app" "function_publicapi" {
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY"  = "${azurerm_application_insights.apinsights_publicapi.instrumentation_key}"
     "CosmosDb"                        = module.cosmosdb.connection_strings[0]
+    "PlayFabTitleId"                  = ""
+    "PlayFabDeveloperSecret"          = ""
   }
   
   site_config {

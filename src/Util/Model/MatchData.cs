@@ -1,4 +1,4 @@
-﻿namespace EventIngestor.Model
+﻿namespace Util.Model
 {
     public class MatchData
     {

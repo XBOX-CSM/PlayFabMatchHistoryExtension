@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace EventIngestor.Model
+namespace Util.Model
 {
     public class Match
     {

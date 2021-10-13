@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace EventIngestor.Model
+namespace Util.Model
 {
     public class PlayerFinishedMatchEvent
     {

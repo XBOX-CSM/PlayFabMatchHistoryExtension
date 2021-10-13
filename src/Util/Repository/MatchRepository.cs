@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using EventIngestor.Model;
+using Util.Model;
 using Microsoft.Azure.Cosmos;
 
-namespace EventIngestor.Repository
+namespace Util.Repository
 {
     public class MatchRepository
     {

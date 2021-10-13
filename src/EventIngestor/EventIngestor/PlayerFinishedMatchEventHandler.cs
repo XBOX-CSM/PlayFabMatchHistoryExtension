@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System;
-using EventIngestor.Model;
-using EventIngestor.Repository;
+using Util.Model;
+using Util.Repository;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31702.278
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31717.71
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServerMock", "src\GameServerMock\GameServerMock.csproj", "{56CD8E6C-5B36-41D1-912D-AE1B5580EE07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServerMock", "src\GameServerMock\GameServerMock.csproj", "{56CD8E6C-5B36-41D1-912D-AE1B5580EE07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventIngestor", "src\EventIngestor\EventIngestor\EventIngestor.csproj", "{00D62DA9-FAAB-48E2-ACBE-11A39C2FEAFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventIngestor", "src\EventIngestor\EventIngestor\EventIngestor.csproj", "{00D62DA9-FAAB-48E2-ACBE-11A39C2FEAFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "src\Util\Util.csproj", "{93D898FE-DEE2-4C4E-AF8F-81F850E81283}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{00D62DA9-FAAB-48E2-ACBE-11A39C2FEAFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00D62DA9-FAAB-48E2-ACBE-11A39C2FEAFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00D62DA9-FAAB-48E2-ACBE-11A39C2FEAFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93D898FE-DEE2-4C4E-AF8F-81F850E81283}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93D898FE-DEE2-4C4E-AF8F-81F850E81283}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93D898FE-DEE2-4C4E-AF8F-81F850E81283}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93D898FE-DEE2-4C4E-AF8F-81F850E81283}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

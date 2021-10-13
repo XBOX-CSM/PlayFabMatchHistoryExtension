@@ -1,5 +1,5 @@
 ﻿using System;
-using EventIngestor.Repository;
+using Util.Repository;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 

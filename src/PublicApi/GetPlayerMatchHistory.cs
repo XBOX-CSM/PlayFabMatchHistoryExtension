@@ -1,6 +1,3 @@
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -10,6 +7,12 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using PlayFab;
+using PlayFab.AuthenticationModels;
+using System;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using Util.Repository;
 
 namespace PublicApi
@@ -45,6 +48,31 @@ namespace PublicApi
                 : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
             return new OkObjectResult(responseMessage);
+        }
+
+        private async Task AuthenticatePlayFabSessionTicketAsync(string sessionTicket, ILogger log)
+        {
+            PlayFab.PlayFabSettings.staticSettings.TitleId = Environment.GetEnvironmentVariable("PlayFabTitleId");
+            PlayFab.PlayFabSettings.staticSettings.DeveloperSecretKey = Environment.GetEnvironmentVariable("PlayFabSecret");
+
+            var getTitleEntityTokenRequest = new GetEntityTokenRequest(); //Do not need to set Entity
+            var titleEntityResponse = await PlayFabAuthenticationAPI.GetEntityTokenAsync(getTitleEntityTokenRequest);
+
+            if (titleEntityResponse.Result != null)
+            {
+                var request = new PlayFab.ServerModels.AuthenticateSessionTicketRequest
+                {
+                    SessionTicket = sessionTicket
+                };
+
+                await PlayFabServerAPI.AuthenticateSessionTicketAsync(request);
+
+                log.LogInformation("Successfully validate authentication Ticket");
+            }
+            else
+            {
+                log.LogError("Couldn't validate Session Ticket with PlayFab!" + titleEntityResponse.Error);
+            }
         }
     }
 }

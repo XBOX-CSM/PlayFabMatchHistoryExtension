@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using PlayFab;
 using PlayFab.AuthenticationModels;
+using Util;
 
 namespace GameServerMock
 {
@@ -11,10 +12,14 @@ namespace GameServerMock
             var playerIdList = new[] { "663E07204C3DB17C", "91F18604695EEE58", "8982965E4E8581AC", "89F845F1589FCC45", "89F845F1589FCC45", "69D7719CC4C64C38" };
             var matchIdList = new[] { "7b92c513-3659-4f46-be63-f2d823c19db7", "c713d080-ac7c-46c5-a119-f6004b9b72e3", "0c24427f-2ebf-44a6-8f12-37259924c7e2" };
 
+            var pfSettings = new PlayFabConnectionSettings
+            {
+                TitleId = Environment.GetEnvironmentVariable("pf_titleId"),
+                Secret = Environment.GetEnvironmentVariable("pf_secret")
+            };
 
-
-            PlayFab.PlayFabSettings.staticSettings.TitleId = PlayFabSettings.TitleId;
-            PlayFab.PlayFabSettings.staticSettings.DeveloperSecretKey = PlayFabSettings.Secret;
+            PlayFabSettings.staticSettings.TitleId = pfSettings.TitleId;
+            PlayFabSettings.staticSettings.DeveloperSecretKey = pfSettings.Secret;
 
             Random random = new Random();
 

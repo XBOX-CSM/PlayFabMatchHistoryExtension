@@ -91,7 +91,7 @@ resource "azurerm_function_app" "function_eventingestor" {
   enabled                = true
   enable_builtin_logging = true
   https_only             = true
-  version                 = "~3"
+  version                 = "~4"
   
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.apinsights_eventingestor.instrumentation_key}"

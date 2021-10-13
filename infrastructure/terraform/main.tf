@@ -108,6 +108,7 @@ resource "azurerm_function_app" "function_eventingestor" {
   
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.apinsights_eventingestor.instrumentation_key}"
+    "CosmosDb"                        = module.cosmosdb.connection_strings[0]
   }
 
   site_config {
@@ -145,7 +146,8 @@ resource "azurerm_function_app" "function_publicapi" {
   }
 
   app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.apinsights_publicapi.instrumentation_key}"
+    "APPINSIGHTS_INSTRUMENTATIONKEY"  = "${azurerm_application_insights.apinsights_publicapi.instrumentation_key}"
+    "CosmosDb"                        = module.cosmosdb.connection_strings[0]
   }
   
   site_config {

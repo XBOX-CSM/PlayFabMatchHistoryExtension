@@ -78,6 +78,12 @@ resource "azurerm_function_app" "function_eventingestor" {
     type  = "Custom"
     value = module.cosmosdb.connection_strings[0]
   }
+  
+  connection_string {
+    name  = "EventQueueStorage"
+    type  = "Custom"
+    value = azurerm_storage_account.storage.primary_connection_string
+  }
 
   site_config {
     ftps_state = "Disabled"

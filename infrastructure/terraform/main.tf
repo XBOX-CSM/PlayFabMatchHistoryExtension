@@ -47,7 +47,6 @@ module "cosmosdb" {
   partition_key = "/playerEntityId"
 }
 
-
 resource "azurerm_app_service_plan" "app_service_plan" {
   name                = "${var.prefix}-app-service-plan"
   location            = azurerm_resource_group.rg.location
@@ -93,22 +92,11 @@ resource "azurerm_function_app" "function_eventingestor" {
   enable_builtin_logging = true
   https_only             = true
   version                 = "~3"
-
-  connection_string {
-    name  = "CosmosDb"
-    type  = "Custom"
-    value = module.cosmosdb.connection_strings[0]
-  }
-  
-  connection_string {
-    name  = "EventQueueStorage"
-    type  = "Custom"
-    value = azurerm_storage_account.storage.primary_connection_string
-  }
   
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.apinsights_eventingestor.instrumentation_key}"
-    "CosmosDb"                        = module.cosmosdb.connection_strings[0]
+    "CosmosDb"                       = module.cosmosdb.connection_strings[0]
+    "EventQueueStorage"              = azurerm_storage_account.storage.primary_connection_string
   }
 
   site_config {
@@ -137,13 +125,7 @@ resource "azurerm_function_app" "function_publicapi" {
   enabled                = true
   enable_builtin_logging = true
   https_only             = true
-  version                 = "~3"
-
-  connection_string {
-    name  = "CosmosDb"
-    type  = "Custom"
-    value = module.cosmosdb.connection_strings[0]
-  }
+  version                 = "~4"
 
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY"  = "${azurerm_application_insights.apinsights_publicapi.instrumentation_key}"

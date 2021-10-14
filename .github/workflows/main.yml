@@ -57,7 +57,7 @@ jobs:
           popd
       - name: 'Deploy EventIngestor'
         uses: Azure/functions-action@v1
-        id: fa
+        id: deploy-eventingestor
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_EVENT_INGESTOR_NAME }}
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_EVENT_INGESTOR_PATH }}/output'
@@ -70,7 +70,7 @@ jobs:
           popd
       - name: 'Deploy PublicApi'
         uses: Azure/functions-action@v1
-        id: fa
+        id: deploy-publicapi
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_PUBLICAPI_NAME }}
           package: '${{ env.AZURE_FUNCTIONAPP_PUBLICAPI_PATH }}/output'

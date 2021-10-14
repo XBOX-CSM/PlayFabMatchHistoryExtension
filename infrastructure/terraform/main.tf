@@ -1,4 +1,4 @@
-﻿# Configure the Azure provider
+# Configure the Azure provider
 terraform {
   required_providers {
     azurerm = {
@@ -44,7 +44,7 @@ module "cosmosdb" {
   tags           = var.tags
   prefix         = var.prefix
   container_name = "match"
-  partition_key = "/playerEntityId"
+  partition_key  = "/masterPlayerEntityId"
 }
 
 resource "azurerm_app_service_plan" "app_service_plan" {
@@ -61,7 +61,7 @@ resource "azurerm_app_service_plan" "app_service_plan" {
 
 locals {
   eventingestor_function_name = "${var.prefix}-eventingestor-function"
-  publicapi_function_name = "${var.prefix}-publicapi-function"
+  publicapi_function_name     = "${var.prefix}-publicapi-function"
 }
 
 resource "azurerm_log_analytics_workspace" "law" {
@@ -91,12 +91,16 @@ resource "azurerm_function_app" "function_eventingestor" {
   enabled                = true
   enable_builtin_logging = true
   https_only             = true
-  version                 = "~4"
-  
+  version                = "~4"
+
+  # https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
   app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.apinsights_eventingestor.instrumentation_key}"
-    "CosmosDb"                       = module.cosmosdb.connection_strings[0]
-    "EventQueueStorage"              = azurerm_storage_account.storage.primary_connection_string
+    "APPINSIGHTS_INSTRUMENTATIONKEY"  = "${azurerm_application_insights.apinsights_eventingestor.instrumentation_key}"
+    "WEBSITE_ENABLE_SYNC_UPDATE_SITE" = 1
+    "WEBSITE_RUN_FROM_PACKAGE"        = 1
+    "FUNCTIONS_WORKER_RUNTIME"        = "dotnet-isolated"
+    "CosmosDb"                        = module.cosmosdb.connection_strings[0]
+    "EventQueueStorage"               = azurerm_storage_account.storage.primary_connection_string
   }
 
   site_config {
@@ -125,15 +129,19 @@ resource "azurerm_function_app" "function_publicapi" {
   enabled                = true
   enable_builtin_logging = true
   https_only             = true
-  version                 = "~4"
+  version                = "~4"
 
+  # https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY"  = "${azurerm_application_insights.apinsights_publicapi.instrumentation_key}"
+    "WEBSITE_ENABLE_SYNC_UPDATE_SITE" = 1
+    "WEBSITE_RUN_FROM_PACKAGE"        = 1
+    "FUNCTIONS_WORKER_RUNTIME"        = "dotnet-isolated"
     "CosmosDb"                        = module.cosmosdb.connection_strings[0]
-    "PlayFabTitleId"                  = ""
-    "PlayFabDeveloperSecret"          = ""
+    "PlayFabTitleId"                  = var.pf_title_id
+    "PlayFabDeveloperSecret"          = var.pf_developer_secret
   }
-  
+
   site_config {
     ftps_state = "Disabled"
     //    ip_restriction = []

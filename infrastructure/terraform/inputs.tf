@@ -19,3 +19,13 @@ variable "sp_client_id" {
   type        = string
   description = "Service Principal ID which is used to run the API"
 }
+
+variable "pf_title_id" {
+  type = string
+  description = "The PlayFab Title ID to authenticate against"
+}
+
+variable "pf_developer_secret" {
+  type = string
+  description = "The PlayFab developer secret for the Title"
+}

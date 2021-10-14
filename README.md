@@ -19,6 +19,8 @@
 |----------|----------|
 | `AZURE_SUBSCRIPTION_ID` | Azure Subscription ID; `id` property when executing `az account show` |
 | `AZURE_TENANT_ID` | Azure Tenant ID; `tenantId` property when executing `az account show` |
+| `TF_VAR_pf_title_id` | A PlayFab Title ID to authenticate against |
+| `TF_VAR_pf_developer_secret` | A PlayFab Developer Secret for the above Title |
 
 
 ### Init Terraform:

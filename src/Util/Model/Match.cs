@@ -10,5 +10,10 @@ namespace Util.Model
         public string MasterPlayerEntityId { get; set; }
 
         public bool IsMatchWon { get; set; }
+
+        public override string ToString()
+        {
+            return "MatchId: " + this.Id + " - Won: " + IsMatchWon;
+        }
     }
 }

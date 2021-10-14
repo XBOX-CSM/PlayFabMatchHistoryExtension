@@ -68,7 +68,8 @@ namespace PlayFabClientMock
                 var client = new HttpClient();
                 while (true)
                 {
-                    var authenticationModel = new PlayFab.ClientModels.LoginWithCustomIDRequest { CreateAccount = false, TitleId = pfSettings.TitleId, CustomId = playerIdList[random.Next(0, playerIdList.Length)].CustomId };
+                    var randPlayer = random.Next(0, playerIdList.Length);
+                    var authenticationModel = new PlayFab.ClientModels.LoginWithCustomIDRequest { CreateAccount = false, TitleId = pfSettings.TitleId, CustomId = playerIdList[randPlayer].CustomId };
 
                     var response = await PlayFab.PlayFabClientAPI.LoginWithCustomIDAsync(authenticationModel);
 
@@ -76,10 +77,22 @@ namespace PlayFabClientMock
                     {
                         SessionTicket = response.Result.SessionTicket,
                     }));
+                    try
+                    {
 
-                    var test = await client.PostAsync(CustomBackendUrl, content);
+                        var ob = await client.PostAsync(CustomBackendUrl, content);
+                        List<Match>? res = JsonSerializer.Deserialize<List<Match>>(ob.Content.ReadAsStream());
 
 
+                        Console.WriteLine("Games Played by Player: " + randPlayer);
+                        foreach(Match match in res)
+                        {
+                            Console.WriteLine("... " + match.ToString());
+                        }
+                    }catch (Exception ex)
+                    {
+                        Console.WriteLine("UPS");
+                    }
                     Thread.Sleep(2000);
 
                 }

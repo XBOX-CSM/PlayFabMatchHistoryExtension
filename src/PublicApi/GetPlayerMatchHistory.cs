@@ -28,9 +28,9 @@ namespace PublicApi
         }
 
         [FunctionName("GetPlayerMatchHistory")]
-        [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
+        [OpenApiOperation(operationId: "Run", tags: new[] { "GetPlayerMatchHistory" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
+        [OpenApiParameter(name: "PlayFab SessionTicket", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **PlayFabSessionTicket** is needed in order to perform operations on this API")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
@@ -39,17 +39,6 @@ namespace PublicApi
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var data = JsonConvert.DeserializeObject<PlayerAuthentication>(requestBody);
 
-             await AuthenticatePlayFabSessionTicketAsync(data.SessionTicket, log);
-
-  
-
-            string responseMessage = "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response. This HTTP triggered function executed successfully.";
-
-            return new OkObjectResult(responseMessage);
-        }
-
-        public async Task AuthenticatePlayFabSessionTicketAsync(string sessionTicket, ILogger log)
-        {
             PlayFab.PlayFabSettings.staticSettings.TitleId = Environment.GetEnvironmentVariable("PlayFabTitleId");
             PlayFab.PlayFabSettings.staticSettings.DeveloperSecretKey = Environment.GetEnvironmentVariable("PlayFabSecret");
 
@@ -60,18 +49,25 @@ namespace PublicApi
             {
                 var request = new PlayFab.ServerModels.AuthenticateSessionTicketRequest
                 {
-                    SessionTicket = sessionTicket
+                    SessionTicket = data.SessionTicket
                 };
 
-                var nase = await PlayFabServerAPI.AuthenticateSessionTicketAsync(request);
+                var response = await PlayFabServerAPI.AuthenticateSessionTicketAsync(request);
 
-                log.LogInformation("Successfully validate authentication Ticket");
+                var userId = response.Result.UserInfo.PlayFabId;
+
+                var result = await cosmosClient.Get(userId);
+
+                return new OkObjectResult(JsonConvert.SerializeObject(result));
             }
             else
             {
                 log.LogError("Couldn't validate Session Ticket with PlayFab!" + titleEntityResponse.Error);
             }
+
+            return new NotFoundObjectResult("No HistoryFound");
         }
+
     }
 }
 

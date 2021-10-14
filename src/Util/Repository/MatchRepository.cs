@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.Azure.Cosmos;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Util.Model;
-using Microsoft.Azure.Cosmos;
 
 namespace Util.Repository
 {
@@ -20,7 +21,7 @@ namespace Util.Repository
                 }
             };
             this.client = new CosmosClient(connectionString, clientOptions);
-            
+
             this.container = client.GetContainer("pfmatchhistory-db", "match");
         }
 
@@ -29,9 +30,27 @@ namespace Util.Repository
             return this.container.CreateItemAsync(item);
         }
 
-        public Task<ItemResponse<Match>> Get(string id)
+        public async Task<List<Match>> Get(string id)
         {
-            return this.container.ReadItemAsync<Match>(id, new PartitionKey(id));
+            QueryDefinition query = new QueryDefinition("SELECT * FROM match c WHERE c.masterPlayerEntityId = @id").WithParameter("@id", id);
+            List<Match> matches = new List<Match>();
+            using (FeedIterator<Match> resultSetIterator = container.GetItemQueryIterator<Match>(
+                query,
+                requestOptions: new QueryRequestOptions()
+                {
+                    PartitionKey = new PartitionKey(id)
+                }
+                ))
+            {
+                while (resultSetIterator.HasMoreResults)
+                {
+                    FeedResponse<Match> response = await resultSetIterator.ReadNextAsync();
+                    matches.AddRange(response);
+                    // For Debug information: if(response.Diagnostics != null)
+                }
+            }
+
+            return matches;
         }
     }
 }

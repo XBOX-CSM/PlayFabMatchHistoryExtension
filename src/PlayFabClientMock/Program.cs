@@ -52,8 +52,8 @@ namespace PlayFabClientMock
 
             var pfSettings = new PlayFabConnectionSettings
             {
-                TitleId = Environment.GetEnvironmentVariable("pf_titleId"),
-                Secret = Environment.GetEnvironmentVariable("pf_secret")
+                TitleId = Environment.GetEnvironmentVariable("TF_VAR_pf_title_id"),
+                Secret = Environment.GetEnvironmentVariable("TF_VAR_pf_developer_secret")
             };
 
             PlayFabSettings.staticSettings.TitleId = pfSettings.TitleId;

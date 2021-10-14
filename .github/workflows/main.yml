@@ -22,9 +22,9 @@ on:
 # 2. Change these variables for your configuration:
 env:
   AZURE_FUNCTIONAPP_EVENT_INGESTOR_NAME: pfmatchhistory-eventingestor-function
-  AZURE_FUNCTIONAPP_PACKAGE_EVENT_INGESTOR_PATH: './src/EventIngestor'
+  AZURE_FUNCTIONAPP_EVENT_INGESTOR_PATH: './src/EventIngestor'
   AZURE_FUNCTIONAPP_PUBLICAPI_NAME: pfmatchhistory-publicapi-function
-  AZURE_FUNCTIONAPP_PUBLICAPI_INGESTOR_PATH: './src/PublicApi'
+  AZURE_FUNCTIONAPP_PUBLICAPI_PATH: './src/PublicApi'
   DOTNET_VERSION: ' 6.0.100-rc.2.21505.57'              # set this to the dotnet version to use
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -52,7 +52,7 @@ jobs:
       - name: 'Build EventIngestor'
         shell: pwsh
         run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_EVENT_INGESTOR_PATH }}'
+          pushd './${{ env.AZURE_FUNCTIONAPP_EVENT_INGESTOR_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
       - name: 'Deploy EventIngestor'
@@ -60,12 +60,12 @@ jobs:
         id: deploy-eventingestor
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_EVENT_INGESTOR_NAME }}
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_EVENT_INGESTOR_PATH }}/output'
+          package: '${{ env.AZURE_FUNCTIONAPP_EVENT_INGESTOR_PATH }}/output'
 
       - name: 'Build PublicApi'
         shell: pwsh
         run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PUBLICAPI_PATH }}'
+          pushd './${{ env.AZURE_FUNCTIONAPP_PUBLICAPI_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
       - name: 'Deploy PublicApi'

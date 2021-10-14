@@ -93,6 +93,7 @@ resource "azurerm_function_app" "function_eventingestor" {
   https_only             = true
   version                = "~4"
 
+  # https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY"  = "${azurerm_application_insights.apinsights_eventingestor.instrumentation_key}"
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE" = 1
@@ -130,6 +131,7 @@ resource "azurerm_function_app" "function_publicapi" {
   https_only             = true
   version                = "~4"
 
+  # https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY"  = "${azurerm_application_insights.apinsights_publicapi.instrumentation_key}"
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE" = 1

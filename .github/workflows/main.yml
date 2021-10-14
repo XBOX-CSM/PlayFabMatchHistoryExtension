@@ -21,8 +21,10 @@ on:
 #
 # 2. Change these variables for your configuration:
 env:
-  AZURE_FUNCTIONAPP_NAME: pfmatchhistory-eventingestor-function  # set this to your application's name
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/EventIngestor'    # set this to the path to your web app project, defaults to the repository root
+  AZURE_FUNCTIONAPP_EVENT_INGESTOR_NAME: pfmatchhistory-eventingestor-function
+  AZURE_FUNCTIONAPP_PACKAGE_EVENT_INGESTOR_PATH: './src/EventIngestor'
+  AZURE_FUNCTIONAPP_PUBLICAPI_NAME: pfmatchhistory-publicapi-function
+  AZURE_FUNCTIONAPP_PUBLICAPI_INGESTOR_PATH: './src/PublicApi'
   DOTNET_VERSION: ' 6.0.100-rc.2.21505.57'              # set this to the dotnet version to use
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -47,15 +49,28 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: 'Run dotnet'
+      - name: 'Build EventIngestor'
         shell: pwsh
         run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_EVENT_INGESTOR_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
-      - name: 'Run Azure Functions Action'
+      - name: 'Deploy EventIngestor'
         uses: Azure/functions-action@v1
         id: fa
         with:
-          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          app-name: ${{ env.AZURE_FUNCTIONAPP_EVENT_INGESTOR_NAME }}
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_EVENT_INGESTOR_PATH }}/output'
+
+      - name: 'Build PublicApi'
+        shell: pwsh
+        run: |
+          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PUBLICAPI_PATH }}'
+          dotnet build --configuration Release --output ./output
+          popd
+      - name: 'Deploy PublicApi'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_PUBLICAPI_NAME }}
+          package: '${{ env.AZURE_FUNCTIONAPP_PUBLICAPI_PATH }}/output'

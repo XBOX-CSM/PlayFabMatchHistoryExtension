@@ -40,7 +40,7 @@ namespace PublicApi
             var data = JsonConvert.DeserializeObject<PlayerAuthentication>(requestBody);
 
             PlayFab.PlayFabSettings.staticSettings.TitleId = Environment.GetEnvironmentVariable("PlayFabTitleId");
-            PlayFab.PlayFabSettings.staticSettings.DeveloperSecretKey = Environment.GetEnvironmentVariable("PlayFabSecret");
+            PlayFab.PlayFabSettings.staticSettings.DeveloperSecretKey = Environment.GetEnvironmentVariable("PlayFabDeveloperSecret");
 
             var getTitleEntityTokenRequest = new GetEntityTokenRequest(); //Do not need to set Entity
             var titleEntityResponse = await PlayFabAuthenticationAPI.GetEntityTokenAsync(getTitleEntityTokenRequest);

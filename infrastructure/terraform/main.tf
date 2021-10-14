@@ -98,7 +98,7 @@ resource "azurerm_function_app" "function_eventingestor" {
     "APPINSIGHTS_INSTRUMENTATIONKEY"  = "${azurerm_application_insights.apinsights_eventingestor.instrumentation_key}"
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE" = 1
     "WEBSITE_RUN_FROM_PACKAGE"        = 1
-    "FUNCTIONS_WORKER_RUNTIME"        = "dotnet-isolated"
+    "FUNCTIONS_WORKER_RUNTIME"        = "dotnet"
     "CosmosDb"                        = module.cosmosdb.connection_strings[0]
     "EventQueueStorage"               = azurerm_storage_account.storage.primary_connection_string
   }
@@ -136,7 +136,7 @@ resource "azurerm_function_app" "function_publicapi" {
     "APPINSIGHTS_INSTRUMENTATIONKEY"  = "${azurerm_application_insights.apinsights_publicapi.instrumentation_key}"
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE" = 1
     "WEBSITE_RUN_FROM_PACKAGE"        = 1
-    "FUNCTIONS_WORKER_RUNTIME"        = "dotnet-isolated"
+    "FUNCTIONS_WORKER_RUNTIME"        = "dotnet"
     "CosmosDb"                        = module.cosmosdb.connection_strings[0]
     "PlayFabTitleId"                  = var.pf_title_id
     "PlayFabDeveloperSecret"          = var.pf_developer_secret

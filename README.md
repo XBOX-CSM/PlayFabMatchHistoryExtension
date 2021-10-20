@@ -1,7 +1,7 @@
 # PlayFabMatchHistoryExtension
-The goal of this Project is to showcase how [Azure PlayFab](https://playfab.com/) can be extended by a scale able Match History with Azure. We wanted to make sure to integrate with Azure PlayFab as much as possible to feed into the built in PlayFab Analytics solution.
+The goal of this Project is to showcase how [Azure PlayFab](https://playfab.com/) can be extended by a scaleable Match History with Azure. We wanted to make sure to integrate with Azure PlayFab as much as possible to feed into the built-in PlayFab Analytics solution.
 
-We only implemented a limited set of Query able statistics, as every game has its very own stats that are interesting to them. Our reference implementation should cover most of these use cases.
+We only implemented a limited set of queryable statistics, as every game has its very own stats that are interesting to them. Our reference implementation should cover most of these use cases.
 
 This extension is intended as a Proof of Concept and not intended for production use.
 
@@ -19,12 +19,21 @@ This extension is intended as a Proof of Concept and not intended for production
 * Azure BlobStorage, or use [Azurite](https://github.com/Azure/Azurite) as a local storage emulator.
 
 # Deploying
+## PlayFab
+* Get your Title ID (from the Game Studio dashboard or from the GameManager)
+* Get a developer secret key:
+  ![Create Developer Secret Key](./docs/create-dev-key.png)
+* Copy it to later use it in an environment variable or as parameter to Terraform
+
+
 ## Terraform
+You can eitehr choose to set the PlayFab *Title Id* and *Developer Secret* as environment variables (recommended, see below), or you can choose not to do so, and instead provide the secret when calling `terraform plan` or `terraform apply`, respectively.
+
 ### Environment Variables
+> These are optional, but if you do not set them, you will be prompted by Terraform for their values.
+
 | Name     | Description    |
 |----------|----------|
-| `AZURE_SUBSCRIPTION_ID` | Azure Subscription ID; `id` property when executing `az account show` |
-| `AZURE_TENANT_ID` | Azure Tenant ID; `tenantId` property when executing `az account show` |
 | `TF_VAR_pf_title_id` | A PlayFab Title ID to authenticate against |
 | `TF_VAR_pf_developer_secret` | A PlayFab Developer Secret for the above Title |
 
@@ -41,8 +50,6 @@ Then, init:
     
     terraform apply
 
-## Running Locally
-If you want to run this locally it is possible if you set the environment variables for "pf_titleId" and "pf_secret" which is requiered by the GameServerMock and the PublicAPI to talk to the PlayFab Admin APIs.
 
 # Architecture
 ![Architecture Diagram](docs/architecture.png)
@@ -55,6 +62,10 @@ This means that we are expecting the game server to publish one "player_finished
 
  ## Getting Events into Azure
  The next step is to register a Queue triggered Azure function that takes our custom event and writes it into our Data store. We decided to use CosmosDb as the serverless SKU enables simple testing and scale abilty. As partition key we are using the PlayFab Master Player Id, which gives every Player their own partition. When looking for the History of a Player this partition schema makes sense and enables us to scale. Be aware that this might need optimization for high throughput players that are attracting more than ~20k history request a second.
+ 
 ## Deliver the Data to the client
 The PublicAPI function project is used to authenticate every request to make sure that only authenticated PlayFab users can query it. Now we only need to query our CosmosDb for the match data of a player and return it.
 
+Have a look at the Swagger UI by navigating to the deployed function app and using the `api/swagger/ui` endpoint, e.g.
+
+    https://pfmatchhistory-publicapi-function.azurewebsites.net/api/swagger/ui

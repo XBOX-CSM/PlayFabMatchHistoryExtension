@@ -1,0 +1,9 @@
+﻿{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "EventQueueStorage": "<Storage Account Queue Connection String (without the actual queue)>",
+    "CosmosDb": "<CosmosDb Connection String"
+  }
+}

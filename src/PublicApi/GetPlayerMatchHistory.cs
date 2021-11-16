@@ -20,11 +20,11 @@ namespace PublicApi
 {
     public class GetPlayerMatchHistory
     {
-        private readonly MatchRepository cosmosClient;
+        private readonly MatchRepository matchRepositoy;
 
         public GetPlayerMatchHistory(MatchRepository repository)
         {
-            this.cosmosClient = repository;
+            this.matchRepositoy = repository;
         }
 
         [FunctionName("GetPlayerMatchHistory")]
@@ -56,7 +56,7 @@ namespace PublicApi
 
                 var userId = response.Result.UserInfo.PlayFabId;
 
-                var result = await cosmosClient.Get(userId);
+                var result = await matchRepositoy.Get(userId);
 
                 return new OkObjectResult(JsonConvert.SerializeObject(result));
             }

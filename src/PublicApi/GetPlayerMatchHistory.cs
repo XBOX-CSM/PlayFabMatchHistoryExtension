@@ -6,12 +6,13 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using PlayFab;
 using PlayFab.AuthenticationModels;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Util.Model;
 using Util.Repository;
 
 namespace PublicApi
@@ -59,9 +60,9 @@ namespace PublicApi
 
                 var userId = response.Result.UserInfo.PlayFabId;
 
-                var result = await matchRepositoy.Get(userId);
+                List<Match> result = await matchRepositoy.Get(userId);
 
-                return new OkObjectResult(JsonConvert.SerializeObject(result));
+                return new OkObjectResult(result);
             }
             else
             {

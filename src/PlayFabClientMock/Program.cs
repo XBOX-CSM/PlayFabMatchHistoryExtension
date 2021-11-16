@@ -1,5 +1,6 @@
 ﻿using PlayFab;
 using PlayFab.AuthenticationModels;
+using System.Net;
 using System.Text.Json;
 using Util;
 using Util.Model;
@@ -85,7 +86,8 @@ namespace PlayFabClientMock
 
                     try
                     {
-                        var playerMatchHistoryResponse = await client.PostAsync(CustomBackendUrl, content);
+                        string requestUri = $"{CustomBackendUrl}?SessionTicket={WebUtility.UrlEncode(loginResponse.Result.SessionTicket)}";
+                        var playerMatchHistoryResponse = await client.GetAsync(requestUri);
                         List<Match>? matchList = JsonSerializer.Deserialize<List<Match>>(playerMatchHistoryResponse.Content.ReadAsStream());
                         if (matchList is null)
                         {

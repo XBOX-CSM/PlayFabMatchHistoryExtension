@@ -62,46 +62,54 @@ namespace PlayFabClientMock
             Random random = new Random();
 
             var getTitleEntityTokenRequest = new GetEntityTokenRequest(); //Do not need to set Entity
-            var titleEntityResponse = await PlayFabAuthenticationAPI.GetEntityTokenAsync(getTitleEntityTokenRequest);
-            if (titleEntityResponse.Result != null)
+            var titleEntityTokenResponse = await PlayFabAuthenticationAPI.GetEntityTokenAsync(getTitleEntityTokenRequest);
+
+            if (titleEntityTokenResponse.Result != null)
             {
                 var client = new HttpClient();
                 while (true)
                 {
                     var randPlayer = random.Next(0, playerIdList.Length);
-                    var authenticationModel = new PlayFab.ClientModels.LoginWithCustomIDRequest { CreateAccount = false, TitleId = pfSettings.TitleId, CustomId = playerIdList[randPlayer].CustomId };
+                    var authenticationModel = new PlayFab.ClientModels.LoginWithCustomIDRequest {
+                        CreateAccount = false,
+                        TitleId = pfSettings.TitleId,
+                        CustomId = playerIdList[randPlayer].CustomId
+                    };
 
-                    var response = await PlayFab.PlayFabClientAPI.LoginWithCustomIDAsync(authenticationModel);
+                    var loginResponse = await PlayFabClientAPI.LoginWithCustomIDAsync(authenticationModel);
 
                     var content = new StringContent(JsonSerializer.Serialize(new PlayerAuthentication
                     {
-                        SessionTicket = response.Result.SessionTicket,
+                        SessionTicket = loginResponse.Result.SessionTicket,
                     }));
+
                     try
                     {
-
-                        var ob = await client.PostAsync(CustomBackendUrl, content);
-                        List<Match>? res = JsonSerializer.Deserialize<List<Match>>(ob.Content.ReadAsStream());
-
+                        var playerMatchHistoryResponse = await client.PostAsync(CustomBackendUrl, content);
+                        List<Match>? matchList = JsonSerializer.Deserialize<List<Match>>(playerMatchHistoryResponse.Content.ReadAsStream());
+                        if (matchList is null)
+                        {
+                            throw new ArgumentNullException(nameof(matchList));
+                        }
 
                         Console.WriteLine("Games Played by Player: " + randPlayer);
-                        foreach(Match match in res)
+
+                        foreach(Match match in matchList)
                         {
                             Console.WriteLine("... " + match.ToString());
                         }
-                    }catch (Exception ex)
-                    {
-                        Console.WriteLine("UPS");
                     }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"An error occured: {ex.Message}");
+                    }
+
                     Thread.Sleep(2000);
-
                 }
-
-
             }
             else
             {
-                Console.WriteLine("broken!!");
+                Console.WriteLine("Colund not retrieve Title Entity Token");
             }
         }
     }

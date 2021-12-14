@@ -45,6 +45,7 @@ namespace PublicApi
             var getTitleEntityTokenRequest = new GetEntityTokenRequest(); //Do not need to set Entity
             var titleEntityResponse = await PlayFabAuthenticationAPI.GetEntityTokenAsync(getTitleEntityTokenRequest);
 
+            // Check if title exists
             if (titleEntityResponse.Result != null)
             {
                 // Authenticate the user using the SessionTicket
@@ -66,10 +67,6 @@ namespace PublicApi
                 List<Match> result = await matchRepositoy.Get(userId);
 
                 return new OkObjectResult(result);
-            }
-            else
-            {
-                log.LogError("Couldn't validate Session Ticket with PlayFab!" + titleEntityResponse.Error); // TODO: Remove - not needed
             }
 
             return new NotFoundObjectResult("No HistoryFound");

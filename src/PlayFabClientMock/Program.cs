@@ -79,11 +79,6 @@ namespace PlayFabClientMock
 
                     var loginResponse = await PlayFabClientAPI.LoginWithCustomIDAsync(authenticationModel);
 
-                    var content = new StringContent(JsonSerializer.Serialize(new PlayerAuthentication
-                    {
-                        SessionTicket = loginResponse.Result.SessionTicket,
-                    }));
-
                     try
                     {
                         string requestUri = $"{CustomBackendUrl}?SessionTicket={WebUtility.UrlEncode(loginResponse.Result.SessionTicket)}";

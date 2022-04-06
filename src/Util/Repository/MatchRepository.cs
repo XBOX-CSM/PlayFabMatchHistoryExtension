@@ -7,8 +7,6 @@ namespace Util.Repository
 {
     public class MatchRepository
     {
-        private readonly CosmosClient client;
-
         private readonly Container container;
 
         public MatchRepository(string connectionString)
@@ -20,7 +18,7 @@ namespace Util.Repository
                     PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
                 }
             };
-            this.client = new CosmosClient(connectionString, clientOptions);
+            CosmosClient client = new CosmosClient(connectionString, clientOptions);
 
             this.container = client.GetContainer("pfmatchhistory-db", "match");
         }

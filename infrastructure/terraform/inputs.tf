@@ -1,4 +1,4 @@
-﻿variable "location" {
+variable "location" {
   type        = string
   description = "The location in which to create all resources"
   default     = "westeurope"
@@ -21,11 +21,11 @@ variable "sp_client_id" {
 }
 
 variable "pf_title_id" {
-  type = string
+  type        = string
   description = "The PlayFab Title ID to authenticate against"
 }
 
 variable "pf_developer_secret" {
-  type = string
+  type        = string
   description = "The PlayFab developer secret for the Title"
 }

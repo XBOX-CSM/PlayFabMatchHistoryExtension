@@ -139,8 +139,8 @@ resource "azurerm_function_app" "function_publicapi" {
     "WEBSITE_RUN_FROM_PACKAGE"        = 1
     "FUNCTIONS_WORKER_RUNTIME"        = "dotnet"
     "CosmosDb"                        = module.cosmosdb.connection_strings[0]
-    "PlayFabTitleId"                  = var.pf_title_id
-    "PlayFabDeveloperSecret"          = var.pf_developer_secret
+    "TF_VAR_pf_title_id"              = var.pf_title_id
+    "TF_VAR_pf_developer_secret"      = var.pf_developer_secret
   }
 
   site_config {

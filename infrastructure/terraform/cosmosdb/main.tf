@@ -2,7 +2,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
   name                          = "${var.prefix}-cosmosdb"
   location                      = var.resource_group.location
   resource_group_name           = var.resource_group.name
-  offer_type                    = "standard"
+  offer_type                    = "Standard"
   kind                          = "GlobalDocumentDB"
   enable_free_tier              = false
   analytical_storage_enabled    = false

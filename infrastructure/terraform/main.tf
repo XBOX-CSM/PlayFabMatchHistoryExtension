@@ -24,13 +24,14 @@ resource "azurerm_resource_group" "rg" {
 }
 
 resource "azurerm_storage_account" "storage" {
-  name                     = replace("${var.prefix}storage", "-", "")
-  resource_group_name      = azurerm_resource_group.rg.name
-  location                 = azurerm_resource_group.rg.location
-  account_kind             = "StorageV2"
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  access_tier              = "Hot"
+  name                             = replace("${var.prefix}storage", "-", "")
+  resource_group_name              = azurerm_resource_group.rg.name
+  location                         = azurerm_resource_group.rg.location
+  account_kind                     = "StorageV2"
+  account_tier                     = "Standard"
+  account_replication_type         = "LRS"
+  access_tier                      = "Hot"
+  cross_tenant_replication_enabled = false
 }
 
 resource "azurerm_storage_queue" "queue" {

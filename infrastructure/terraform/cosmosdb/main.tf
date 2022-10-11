@@ -42,7 +42,7 @@ resource "azurerm_cosmosdb_sql_container" "match_container" {
   # Must not set "throughput" for serverless
 
   indexing_policy {
-    indexing_mode = "Consistent"
+    indexing_mode = "consistent"
 
     included_path {
       path = "/*"

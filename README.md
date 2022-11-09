@@ -27,7 +27,7 @@ This extension is intended as a Proof of Concept and not intended for production
 
 
 ## Terraform
-You can eitehr choose to set the PlayFab *Title Id* and *Developer Secret* as environment variables (recommended, see below), or you can choose not to do so, and instead provide the secret when calling `terraform plan` or `terraform apply`, respectively.
+You can either choose to set the PlayFab *Title Id* and *Developer Secret* as environment variables (recommended, see below), or you can choose not to do so, and instead provide the secret when calling `terraform plan` or `terraform apply`, respectively.
 
 ### Environment Variables
 > These are optional, but if you do not set them, you will be prompted by Terraform for their values.
